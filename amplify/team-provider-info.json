@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-androidawstutorial-dev-193312-authRole",
+      "UnauthRoleArn": "arn:aws:iam::690798576853:role/amplify-androidawstutorial-dev-193312-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::690798576853:role/amplify-androidawstutorial-dev-193312-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-androidawstutorial-dev-193312-deployment",
+      "UnauthRoleName": "amplify-androidawstutorial-dev-193312-unauthRole",
+      "StackName": "amplify-androidawstutorial-dev-193312",
+      "StackId": "arn:aws:cloudformation:eu-central-1:690798576853:stack/amplify-androidawstutorial-dev-193312/9145d3b0-8d98-11eb-9746-0ae1e209150e",
+      "AmplifyAppId": "dv9jp5gigtu2i"
+    },
+    "categories": {
+      "auth": {
+        "androidawstutorial2fe75dae": {}
+      }
+    }
+  }
+}
