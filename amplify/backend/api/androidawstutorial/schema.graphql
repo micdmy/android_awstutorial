@@ -7,7 +7,7 @@ type NoteData
     image: String
 }
 
-type Item @model
+type ItemData @model
 @auth(rules: [{ allow: owner, operations: [create, delete, update] }])
 {
     id: ID!

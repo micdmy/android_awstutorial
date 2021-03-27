@@ -18,16 +18,16 @@ import com.amplifyframework.core.model.query.predicate.QueryField;
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the Item type in your schema. */
+/** This is an auto generated class representing the ItemData type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "Items", authRules = {
+@ModelConfig(pluralName = "ItemData", authRules = {
   @AuthRule(allow = AuthStrategy.OWNER, ownerField = "owner", identityClaim = "cognito:username", operations = { ModelOperation.CREATE, ModelOperation.DELETE, ModelOperation.UPDATE })
 })
-public final class Item implements Model {
-  public static final QueryField ID = field("Item", "id");
-  public static final QueryField NAME = field("Item", "name");
-  public static final QueryField DESCRIPTION = field("Item", "description");
-  public static final QueryField LOCATION = field("Item", "location");
+public final class ItemData implements Model {
+  public static final QueryField ID = field("ItemData", "id");
+  public static final QueryField NAME = field("ItemData", "name");
+  public static final QueryField DESCRIPTION = field("ItemData", "description");
+  public static final QueryField LOCATION = field("ItemData", "location");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
   private final @ModelField(targetType="String", isRequired = true) String description;
@@ -48,7 +48,7 @@ public final class Item implements Model {
       return location;
   }
   
-  private Item(String id, String name, String description, String location) {
+  private ItemData(String id, String name, String description, String location) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -62,11 +62,11 @@ public final class Item implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      Item item = (Item) obj;
-      return ObjectsCompat.equals(getId(), item.getId()) &&
-              ObjectsCompat.equals(getName(), item.getName()) &&
-              ObjectsCompat.equals(getDescription(), item.getDescription()) &&
-              ObjectsCompat.equals(getLocation(), item.getLocation());
+      ItemData itemData = (ItemData) obj;
+      return ObjectsCompat.equals(getId(), itemData.getId()) &&
+              ObjectsCompat.equals(getName(), itemData.getName()) &&
+              ObjectsCompat.equals(getDescription(), itemData.getDescription()) &&
+              ObjectsCompat.equals(getLocation(), itemData.getLocation());
       }
   }
   
@@ -84,7 +84,7 @@ public final class Item implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("Item {")
+      .append("ItemData {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("name=" + String.valueOf(getName()) + ", ")
       .append("description=" + String.valueOf(getDescription()) + ", ")
@@ -106,7 +106,7 @@ public final class Item implements Model {
    * @return an instance of this model with only ID populated
    * @throws IllegalArgumentException Checks that ID is in the proper format
    */
-  public static Item justId(String id) {
+  public static ItemData justId(String id) {
     try {
       UUID.fromString(id); // Check that ID is in the UUID format - if not an exception is thrown
     } catch (Exception exception) {
@@ -116,7 +116,7 @@ public final class Item implements Model {
               "creating a new object, use the standard builder method and leave the ID field blank."
       );
     }
-    return new Item(
+    return new ItemData(
       id,
       null,
       null,
@@ -146,7 +146,7 @@ public final class Item implements Model {
   
 
   public interface BuildStep {
-    Item build();
+    ItemData build();
     BuildStep id(String id) throws IllegalArgumentException;
   }
   
@@ -157,10 +157,10 @@ public final class Item implements Model {
     private String description;
     private String location;
     @Override
-     public Item build() {
+     public ItemData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new Item(
+        return new ItemData(
           id,
           name,
           description,
