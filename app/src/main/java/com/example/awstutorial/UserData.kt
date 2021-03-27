@@ -31,9 +31,6 @@ object UserData {
     private fun <T> MutableLiveData<T>.notifyObserver() {
         this.postValue(this.value)
     }
-    fun notifyObserver() {
-        this._notes.notifyObserver()
-    }
 
     fun notes() : LiveData<MutableList<Note>>  = _notes
     fun addNote(n : Note) {
