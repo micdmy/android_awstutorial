@@ -6,3 +6,12 @@ type NoteData
     description: String
     image: String
 }
+
+type Item @model
+@auth(rules: [{ allow: owner, operations: [create, delete, update] }])
+{
+    id: ID!
+    name: String!
+    description: String!
+    location: String!
+}
