@@ -16,6 +16,7 @@ import com.amplifyframework.auth.result.AuthSessionResult
 import com.amplifyframework.auth.result.AuthSignInResult
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.InitializationStatus
+import com.amplifyframework.datastore.generated.model.ItemData
 import com.amplifyframework.datastore.generated.model.NoteData
 import com.amplifyframework.hub.HubChannel
 import com.amplifyframework.hub.HubEvent
@@ -83,13 +84,21 @@ object Backend {
         UserData.setSignedIn(withSignedInStatus)
 
         val notes = UserData.notes().value
-        val isEmpty = notes?.isEmpty() ?: false
+        val isEmptyN = notes?.isEmpty() ?: false
+
+        val items = UserData.items().value
+        val isEmptyI = items?.isEmpty() ?: false
 
         // query notes when signed in and we do not have Notes yet
-        if (withSignedInStatus && isEmpty ) {
+        if (withSignedInStatus && isEmptyN ) {
             this.queryNotes()
         } else {
             UserData.resetNotes()
+        }
+        if (withSignedInStatus && isEmptyI ) {
+            this.queryItems()
+        } else {
+            UserData.resetItems()
         }
     }
 
@@ -167,6 +176,60 @@ object Backend {
                         Log.e(TAG, response.errors.first().message)
                     } else {
                         Log.i(TAG, "Deleted Note $response")
+                    }
+                },
+                { error -> Log.e(TAG, "Delete failed", error) }
+        )
+    }
+
+    fun queryItems() {
+        Log.i(TAG, "Querying items")
+
+        Amplify.API.query(
+                ModelQuery.list(ItemData::class.java),
+                { response ->
+                    Log.i(TAG, "Queried")
+                    for (itemData in response.data) {
+                        Log.i(TAG, itemData.name)
+                        // TODO should add all the notes at once instead of one by one (each add triggers a UI refresh)
+                        UserData.addItem(UserData.Item.from(itemData))
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+        )
+    }
+
+    fun createItem(item : UserData.Item) {
+        Log.i(TAG, "Creating items")
+
+        Amplify.API.mutate(
+                ModelMutation.create(item.data),
+                { response ->
+                    Log.i(TAG, "Created")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, response.errors.first().message)
+                    } else {
+                        Log.i(TAG, "Created Note with id: " + response.data.id)
+                    }
+                },
+                { error -> Log.e(TAG, "Create failed", error) }
+        )
+    }
+
+    fun deleteItem(item : UserData.Item?) {
+
+        if (item == null) return
+
+        Log.i(TAG, "Deleting note $item")
+
+        Amplify.API.mutate(
+                ModelMutation.delete(item.data),
+                { response ->
+                    Log.i(TAG, "Deleted")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, response.errors.first().message)
+                    } else {
+                        Log.i(TAG, "Deleted Item $response")
                     }
                 },
                 { error -> Log.e(TAG, "Delete failed", error) }

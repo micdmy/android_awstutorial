@@ -33,6 +33,7 @@
                 <data android:scheme="gettingstarted" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AddNoteActivity"
             android:label="Add Note"
@@ -41,6 +42,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.awstutorial.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".AddActivityItem"
+            android:label="Add Item"
+            android:theme="@style/Theme.AWSTutorial.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.awstutorial.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

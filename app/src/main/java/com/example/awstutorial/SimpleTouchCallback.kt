@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 // https://stackoverflow.com/questions/33985719/android-swipe-to-delete-recyclerview
-class SwipeCallback(private val activity: AppCompatActivity): ItemTouchHelper.SimpleCallback(
+open abstract class SwipeCallback(val activity: AppCompatActivity): ItemTouchHelper.SimpleCallback(
     0,
     ItemTouchHelper.LEFT
 ) {
@@ -73,20 +73,4 @@ class SwipeCallback(private val activity: AppCompatActivity): ItemTouchHelper.Si
         return false
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-
-        Toast.makeText(activity, "deleted", Toast.LENGTH_SHORT).show()
-
-        //Remove swiped item from list and notify the RecyclerView
-        Log.d(TAG, "Going to remove ${viewHolder.adapterPosition}")
-
-        // get the position of the swiped item in the list
-        val position = viewHolder.adapterPosition
-
-        // remove to note from the userdata will refresh the UI
-        val note = UserData.deleteNote(position)
-
-        // async remove from backend
-        Backend.deleteNote(note)
-    }
 }

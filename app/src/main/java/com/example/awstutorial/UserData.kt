@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.datastore.generated.model.NoteData
+import com.amplifyframework.datastore.generated.model.ItemData
 
 // a singleton to hold user data (this is a ViewModel pattern, without inheriting from ViewModel)
 object UserData {
@@ -26,6 +27,7 @@ object UserData {
 
     // the notes
     private val _notes = MutableLiveData<MutableList<Note>>(mutableListOf())
+    private val _items = MutableLiveData<MutableList<Item>>(mutableListOf())
 
     // please check https://stackoverflow.com/questions/47941537/notify-observer-when-item-is-added-to-list-of-livedata
     private fun <T> MutableLiveData<T>.notifyObserver() {
@@ -33,6 +35,7 @@ object UserData {
     }
 
     fun notes() : LiveData<MutableList<Note>>  = _notes
+    fun items() : LiveData<MutableList<Item>>  = _items
     fun addNote(n : Note) {
         val notes = _notes.value
         if (notes != null) {
@@ -51,6 +54,25 @@ object UserData {
     fun resetNotes() {
         this._notes.value?.clear()  //used when signing out
         _notes.notifyObserver()
+    }
+    fun addItem(n : Item) {
+        val items = _items.value
+        if (items != null) {
+            items.add(n)
+            _items.notifyObserver()
+        } else {
+            Log.e(TAG, "addNote : note collection is null !!")
+        }
+    }
+    fun deleteItem(at: Int) : Item?  {
+        val note = _items.value?.removeAt(at)
+        _items.notifyObserver()
+        return note
+    }
+
+    fun resetItems() {
+        this._items.value?.clear()  //used when signing out
+        _items.notifyObserver()
     }
 
 
@@ -79,4 +101,25 @@ object UserData {
             }
         }
     }
+
+    data class Item (val id: String, val name: String, val description: String, var location: String) {
+        override fun toString(): String = name
+
+        // return an API NoteData from this Note object
+        val data : ItemData
+            get() = ItemData.builder()
+                    .name(this.name)
+                    .description(this.description)
+                    .location(this.location)
+                    .id(this.id)
+                    .build()
+        // static function to create a Item a NoteData API object
+        companion object {
+            fun from(itemData : ItemData) : Item {
+                val result = Item(itemData.id, itemData.name, itemData.description, itemData.location)
+                return result
+            }
+        }
+    }
+
 }
