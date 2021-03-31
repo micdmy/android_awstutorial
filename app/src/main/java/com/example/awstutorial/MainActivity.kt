@@ -1,13 +1,23 @@
 package com.example.awstutorial
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -15,10 +25,12 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
 
         // prepare our List view and RecyclerView (cells)
         setupRecyclerViewNotes(note_list)
@@ -26,6 +38,12 @@ class MainActivity : AppCompatActivity() {
 
         setupAuthButton(UserData)
 
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) ==  ConnectionResult.SUCCESS) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        } else {
+            Log.e(TAG, "Cant start Google Play API")
+            Toast.makeText(this, "Cant start Google Play API", Toast.LENGTH_SHORT).show()
+        }
         UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
             // update UI
             Log.i(TAG, "isSignedIn changed : $isSignedUp")
@@ -35,26 +53,82 @@ class MainActivity : AppCompatActivity() {
                 fabAuth.setImageResource(R.drawable.ic_baseline_lock_open)
                 Log.d(TAG, "Showing fabADD")
                 fabAdd.show()
-                fabAdd.animate().translationY(0.0F - 1.1F * fabAuth.customSize)
                 fabItemAdd.show()
-                fabItemAdd.animate().translationY(0.0F - 1.1F * fabAuth.customSize)
             } else {
                 fabAuth.setImageResource(R.drawable.ic_baseline_lock)
                 Log.d(TAG, "Hiding fabADD")
                 fabAdd.hide()
-                fabAdd.animate().translationY(0.0F)
                 fabItemAdd.hide()
-                fabItemAdd.animate().translationY(0.0F)
             }
         })
 
-        // register a click listener
         fabAdd.setOnClickListener {
             startActivity(Intent(this, AddNoteActivity::class.java))
         }
-        // register a click listener
         fabItemAdd.setOnClickListener {
             startActivity(Intent(this, AddActivityItem::class.java))
+        }
+
+        // Register the permissions callback, which handles the user's response to the
+        // system permissions dialog. Save the return value, an instance of
+        // ActivityResultLauncher. You can use either a val, as shown in this snippet,
+        // or a lateinit var in your onAttach() or onCreate() method.
+        val requestPermissionLauncher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()
+                ) { isGranted: Boolean ->
+                    if (isGranted) {
+                        // Permission is granted. Continue the action or workflow in your
+                        // app.
+                        fusedLocationClient.lastLocation
+                                .addOnSuccessListener { location : Location? ->
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
+                                        val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
+                                        locationTextView.setText("N:$latitude, E:$longitude")
+                                    }
+                                }
+                    } else {
+                        // Explain to the user that the feature is unavailable because the
+                        // features requires a permission that the user has denied. At the
+                        // same time, respect the user's decision. Don't link to system
+                        // settings in an effort to convince the user to change their
+                        // decision.
+                    }
+                }
+
+
+        fabGetLocation.setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // You can use the API that requires the permission.
+                    fusedLocationClient.lastLocation
+                            .addOnSuccessListener { location : Location? ->
+                                // Got last known location. In some rare situations this can be null.
+                                if (location != null) {
+                                    val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
+                                    val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
+                                    locationTextView.setText("N:$latitude, E:$longitude")
+                                }
+                            }
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected. In this UI,
+                // include a "cancel" or "no thanks" button that allows the user to
+                // continue using your app without granting the permission.
+
+                }
+                else -> {
+                    // You can directly ask for the permission.
+                    // The registered ActivityResultCallback gets the result of this request.
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            }
         }
     }
 

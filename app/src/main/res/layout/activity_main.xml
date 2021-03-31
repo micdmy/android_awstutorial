@@ -10,14 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.AWSTutorial.AppBarOverlay"
-        android:visibility="invisible">
+        android:visibility="visible">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <TextView
+            android:id="@+id/locationTextView"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.AWSTutorial.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:text="Unknown" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -61,5 +60,19 @@
         app:fabSize="auto"
         app:layout_anchor="@+id/fabAdd"
         app:layout_anchorGravity="center_horizontal|top" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGetLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_baseline_location_searching"
+        android:visibility="visible"
+        app:fabCustomSize="60dp"
+        app:fabSize="auto"
+        app:layout_anchor="@+id/fabAuth"
+        app:layout_anchorGravity="left|center_vertical" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
