@@ -27,11 +27,15 @@ public final class ItemData implements Model {
   public static final QueryField ID = field("ItemData", "id");
   public static final QueryField NAME = field("ItemData", "name");
   public static final QueryField DESCRIPTION = field("ItemData", "description");
+  public static final QueryField ITEM_TYPE = field("ItemData", "itemType");
   public static final QueryField LOCATION = field("ItemData", "location");
+  public static final QueryField COORDINATES = field("ItemData", "coordinates");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
   private final @ModelField(targetType="String", isRequired = true) String description;
+  private final @ModelField(targetType="ItemType", isRequired = true) ItemType itemType;
   private final @ModelField(targetType="String", isRequired = true) String location;
+  private final @ModelField(targetType="Coordinates") Coordinates coordinates;
   public String getId() {
       return id;
   }
@@ -44,15 +48,25 @@ public final class ItemData implements Model {
       return description;
   }
   
+  public ItemType getItemType() {
+      return itemType;
+  }
+  
   public String getLocation() {
       return location;
   }
   
-  private ItemData(String id, String name, String description, String location) {
+  public Coordinates getCoordinates() {
+      return coordinates;
+  }
+  
+  private ItemData(String id, String name, String description, ItemType itemType, String location, Coordinates coordinates) {
     this.id = id;
     this.name = name;
     this.description = description;
+    this.itemType = itemType;
     this.location = location;
+    this.coordinates = coordinates;
   }
   
   @Override
@@ -66,7 +80,9 @@ public final class ItemData implements Model {
       return ObjectsCompat.equals(getId(), itemData.getId()) &&
               ObjectsCompat.equals(getName(), itemData.getName()) &&
               ObjectsCompat.equals(getDescription(), itemData.getDescription()) &&
-              ObjectsCompat.equals(getLocation(), itemData.getLocation());
+              ObjectsCompat.equals(getItemType(), itemData.getItemType()) &&
+              ObjectsCompat.equals(getLocation(), itemData.getLocation()) &&
+              ObjectsCompat.equals(getCoordinates(), itemData.getCoordinates());
       }
   }
   
@@ -76,7 +92,9 @@ public final class ItemData implements Model {
       .append(getId())
       .append(getName())
       .append(getDescription())
+      .append(getItemType())
       .append(getLocation())
+      .append(getCoordinates())
       .toString()
       .hashCode();
   }
@@ -88,7 +106,9 @@ public final class ItemData implements Model {
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("name=" + String.valueOf(getName()) + ", ")
       .append("description=" + String.valueOf(getDescription()) + ", ")
-      .append("location=" + String.valueOf(getLocation()))
+      .append("itemType=" + String.valueOf(getItemType()) + ", ")
+      .append("location=" + String.valueOf(getLocation()) + ", ")
+      .append("coordinates=" + String.valueOf(getCoordinates()))
       .append("}")
       .toString();
   }
@@ -120,6 +140,8 @@ public final class ItemData implements Model {
       id,
       null,
       null,
+      null,
+      null,
       null
     );
   }
@@ -128,7 +150,9 @@ public final class ItemData implements Model {
     return new CopyOfBuilder(id,
       name,
       description,
-      location);
+      itemType,
+      location,
+      coordinates);
   }
   public interface NameStep {
     DescriptionStep name(String name);
@@ -136,7 +160,12 @@ public final class ItemData implements Model {
   
 
   public interface DescriptionStep {
-    LocationStep description(String description);
+    ItemTypeStep description(String description);
+  }
+  
+
+  public interface ItemTypeStep {
+    LocationStep itemType(ItemType itemType);
   }
   
 
@@ -148,14 +177,17 @@ public final class ItemData implements Model {
   public interface BuildStep {
     ItemData build();
     BuildStep id(String id) throws IllegalArgumentException;
+    BuildStep coordinates(Coordinates coordinates);
   }
   
 
-  public static class Builder implements NameStep, DescriptionStep, LocationStep, BuildStep {
+  public static class Builder implements NameStep, DescriptionStep, ItemTypeStep, LocationStep, BuildStep {
     private String id;
     private String name;
     private String description;
+    private ItemType itemType;
     private String location;
+    private Coordinates coordinates;
     @Override
      public ItemData build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
@@ -164,7 +196,9 @@ public final class ItemData implements Model {
           id,
           name,
           description,
-          location);
+          itemType,
+          location,
+          coordinates);
     }
     
     @Override
@@ -175,9 +209,16 @@ public final class ItemData implements Model {
     }
     
     @Override
-     public LocationStep description(String description) {
+     public ItemTypeStep description(String description) {
         Objects.requireNonNull(description);
         this.description = description;
+        return this;
+    }
+    
+    @Override
+     public LocationStep itemType(ItemType itemType) {
+        Objects.requireNonNull(itemType);
+        this.itemType = itemType;
         return this;
     }
     
@@ -185,6 +226,12 @@ public final class ItemData implements Model {
      public BuildStep location(String location) {
         Objects.requireNonNull(location);
         this.location = location;
+        return this;
+    }
+    
+    @Override
+     public BuildStep coordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
         return this;
     }
     
@@ -211,11 +258,13 @@ public final class ItemData implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String name, String description, String location) {
+    private CopyOfBuilder(String id, String name, String description, ItemType itemType, String location, Coordinates coordinates) {
       super.id(id);
       super.name(name)
         .description(description)
-        .location(location);
+        .itemType(itemType)
+        .location(location)
+        .coordinates(coordinates);
     }
     
     @Override
@@ -229,8 +278,18 @@ public final class ItemData implements Model {
     }
     
     @Override
+     public CopyOfBuilder itemType(ItemType itemType) {
+      return (CopyOfBuilder) super.itemType(itemType);
+    }
+    
+    @Override
      public CopyOfBuilder location(String location) {
       return (CopyOfBuilder) super.location(location);
+    }
+    
+    @Override
+     public CopyOfBuilder coordinates(Coordinates coordinates) {
+      return (CopyOfBuilder) super.coordinates(coordinates);
     }
   }
   

@@ -13,5 +13,23 @@ type ItemData @model
     id: ID!
     name: String!
     description: String!
+    itemType: ItemType!
     location: String!
+    coordinates: Coordinates
+}
+
+type Coordinates
+{
+    latitude: Float!
+    longitude: Float!
+}
+
+enum ItemType
+{
+    SWORD
+    ARMOR
+    SHIELD
+    HELMET
+    RING
+    AMULET
 }

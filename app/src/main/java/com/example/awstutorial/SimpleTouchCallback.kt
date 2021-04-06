@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 // https://stackoverflow.com/questions/33985719/android-swipe-to-delete-recyclerview
-open abstract class SwipeCallback(val activity: AppCompatActivity): ItemTouchHelper.SimpleCallback(
+abstract class SwipeCallback(val activity: AppCompatActivity): ItemTouchHelper.SimpleCallback(
     0,
     ItemTouchHelper.LEFT
 ) {
