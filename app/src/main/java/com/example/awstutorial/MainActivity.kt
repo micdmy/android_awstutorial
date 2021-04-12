@@ -2,9 +2,11 @@ package com.example.awstutorial
 
 import android.Manifest
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,9 +18,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.play.core.tasks.Task
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -26,6 +29,9 @@ import kotlinx.android.synthetic.main.content_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private var locationGetsCounter: UInt = 0u;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,15 +85,23 @@ class MainActivity : AppCompatActivity() {
                     if (isGranted) {
                         // Permission is granted. Continue the action or workflow in your
                         // app.
-                        fusedLocationClient.lastLocation
-                                .addOnSuccessListener { location : Location? ->
-                                    // Got last known location. In some rare situations this can be null.
-                                    if (location != null) {
-                                        val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
-                                        val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
-                                        locationTextView.setText("N:$latitude, E:$longitude")
-                                    }
-                                }
+                        val locationRequest = LocationRequest.create().apply {
+                            interval = 10000
+                            fastestInterval = 5000
+                            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                        }
+                        fusedLocationClient.requestLocationUpdates(locationRequest,
+                                locationCallback,
+                                Looper.getMainLooper())
+                        //fusedLocationClient.lastLocation
+                        //        .addOnSuccessListener { location : Location? ->
+                        //            // Got last known location. In some rare situations this can be null.
+                        //            if (location != null) {
+                        //                val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
+                        //                val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
+                        //                locationTextView.setText("N:$latitude, E:$longitude")
+                        //            }
+                        //        }
                     } else {
                         // Explain to the user that the feature is unavailable because the
                         // features requires a permission that the user has denied. At the
@@ -97,6 +111,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                locationGetsCounter += 1u
+                val location = locationResult.lastLocation
+                //for (location in locationResult.locations){ //Alternatively, we can iterate, through locations:
+                //    // Update UI with location data
+                //    // ...
+                //}
+                displayLocation(location, locationResult.locations.size)
+            }
+        }
 
         fabGetLocation.setOnClickListener {
             when {
@@ -105,15 +131,14 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     // You can use the API that requires the permission.
-                    fusedLocationClient.lastLocation
-                            .addOnSuccessListener { location : Location? ->
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
-                                    val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
-                                    locationTextView.setText("N:$latitude, E:$longitude")
-                                }
-                            }
+                    val locationRequest = LocationRequest.create().apply {
+                        interval = 10000
+                        fastestInterval = 5000
+                        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                    }
+                    fusedLocationClient.requestLocationUpdates(locationRequest,
+                            locationCallback,
+                            Looper.getMainLooper())
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 // In an educational UI, explain to the user why your app requires this
@@ -130,6 +155,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun displayLocation(location: Location, numOfLocations: Int)
+    {
+        val latitude = Location.convert(location.getLatitude(), Location.FORMAT_SECONDS)
+        val longitude = Location.convert(location.getLongitude(), Location.FORMAT_SECONDS)
+        locationTextView.setText("N:$latitude, E:$longitude, Locs:${numOfLocations}, Cnt:${locationGetsCounter}")
     }
 
     // recycler view is the list of cells
