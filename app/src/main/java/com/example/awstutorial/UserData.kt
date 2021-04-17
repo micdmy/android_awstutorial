@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.amplifyframework.datastore.generated.model.NoteData
 import com.amplifyframework.datastore.generated.model.ItemData
 import com.amplifyframework.datastore.generated.model.ItemType
-import kotlinx.android.synthetic.main.activity_add_item.*
+import com.amplifyframework.datastore.generated.model.Coordinates
 
 // a singleton to hold user data (this is a ViewModel pattern, without inheriting from ViewModel)
 object UserData {
@@ -104,23 +104,24 @@ object UserData {
         }
     }
 
-    data class Item (val id: String, val name: String, val description: String, var itemType: ItemType, var location: String) {
+    data class Item (val id: String, val name: String, val description: String, var itemType: ItemType, var location: String, val coordinates: Coordinates?) {
         override fun toString(): String = name
 
         // return an API NoteData from this Note object
         val data : ItemData
             get() = ItemData.builder()
-                    .name(this.name)
-                    .description(this.description)
-                    .itemType(this.itemType)
-                    .location(this.location)
-                    .id(this.id)
-                    .build()
+                .name(this.name)
+                .description(this.description)
+                .itemType(this.itemType)
+                .location(this.location)
+                .id(this.id)
+                .coordinates(this.coordinates)
+                .build()
+
         // static function to create a Item a NoteData API object
         companion object {
             fun from(itemData : ItemData) : Item {
-                val result = Item(itemData.id, itemData.name, itemData.description, itemData.itemType, itemData.location)
-                return result
+                return Item(itemData.id, itemData.name, itemData.description, itemData.itemType, itemData.location, itemData.coordinates)
             }
 
             fun itemType2Idx(itemType : ItemType): Int {

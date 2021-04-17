@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var locationGetsCounter: UInt = 0u;
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +74,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, AddNoteActivity::class.java))
         }
         fabItemAdd.setOnClickListener {
-            startActivity(Intent(this, AddActivityItem::class.java))
+            val intend = Intent(this, AddActivityItem::class.java)
+            val bundle = Bundle()
+            bundle.putDouble("latitude", latitude)
+            bundle.putDouble("longitude", longitude)
+            intend.putExtras(bundle)
+            startActivity(intend)
         }
 
         // Register the permissions callback, which handles the user's response to the
@@ -159,9 +166,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayLocation(location: Location, numOfLocations: Int)
     {
-        val latitude = Location.convert(location.getLatitude(), Location.FORMAT_SECONDS)
-        val longitude = Location.convert(location.getLongitude(), Location.FORMAT_SECONDS)
-        locationTextView.setText("N:$latitude, E:$longitude, Locs:${numOfLocations}, Cnt:${locationGetsCounter}")
+        latitude = location.latitude
+        longitude = location.longitude
+        val latitudeStr = Location.convert(latitude, Location.FORMAT_SECONDS)
+        val longitudeStr = Location.convert(longitude, Location.FORMAT_SECONDS)
+        locationTextView.setText("N:$latitudeStr, E:$longitudeStr, Locs:${numOfLocations}, Cnt:${locationGetsCounter}")
     }
 
     // recycler view is the list of cells

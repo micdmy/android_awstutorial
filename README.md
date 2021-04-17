@@ -10,5 +10,6 @@ Todo steps:
 2 make CRUD gui for user's items - DONE (except update)
 3 get current location from gps - DONE
 4 allow updating item location with current location
+  4a can add item with location or without it - DONE
 5 show arbitrary location on the map
 6 show item location on the map
