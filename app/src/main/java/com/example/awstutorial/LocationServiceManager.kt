@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.DeadObjectException
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,9 +26,11 @@ class LocationServiceManager(private val activity: ComponentActivity) {
             val binder = service as LocationService.LocalBinder
             locationService = binder.getService()
             locationServiceBound = true
+            Log.i(TAG, "onServiceConnected")
         }
         override fun onServiceDisconnected(name: ComponentName?) {
             locationServiceBound = false
+            Log.i(TAG, "onServiceConnected")
         }
     }
     private val requestPermissionLauncher = activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -92,34 +95,43 @@ class LocationServiceManager(private val activity: ComponentActivity) {
 
     private fun requestServiceToRequestLocationUpdates() {
         if (!locationServiceBound) {
-            return //TODO log assertion
+            Log.e(TAG, "requestServiceToRequestLocationUpdates() locationServiceBound==false")
+            return
         }
         try {
             locationService.requestLocationUpdates()
         }
         catch (e: UninitializedPropertyAccessException) //locationService not initialised yet
-        { //TODO log assertion
+        {
+            Log.e(TAG, "requestServiceToRequestLocationUpdates() UninitializedPropertyAccessException")
         }
         catch (e: DeadObjectException) //locationService method cant be called, because locationService not bound yet
-        { //TODO log assertion
+        {
+            Log.e(TAG, "requestServiceToRequestLocationUpdates() DeadObjectException")
         }
     }
 
 
     fun getLastLocation(): Location? {
         if (!locationServiceBound) {
-            return null //TODO log assertion
+            Log.e(TAG, "getLastLocation() locationServiceBound==false")
+            return null
         }
         return try {
             locationService.getLocation()
         }
         catch (e: UninitializedPropertyAccessException) //locationService not initialised yet
         {
-            return null //TODO log assertion
+            Log.e(TAG, "getLastLocation() UninitializedPropertyAccessException")
+            return null
         }
         catch (e: DeadObjectException) //locationService method cant be called, because locationService not bound yet
         {
-            return null //TODO log assertion
+            Log.e(TAG, "getLastLocation() DeadObjectException")
+            return null
         }
+    }
+    companion object {
+        private const val TAG = "LocationServiceManager"
     }
 }

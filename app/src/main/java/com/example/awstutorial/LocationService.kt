@@ -44,6 +44,7 @@ class LocationService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.i(TAG, "onCreate")
 
         if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) ==  ConnectionResult.SUCCESS) {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -76,7 +77,13 @@ class LocationService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder {
+        Log.i(TAG, "onBind")
         return binder
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy")
     }
 
     companion object {

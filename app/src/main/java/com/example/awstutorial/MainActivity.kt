@@ -34,19 +34,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationServiceManager: LocationServiceManager
 
 
-    override fun onStart() {
-        super.onStart()
-        locationServiceManager = LocationServiceManager(this)
-        locationServiceManager.bind()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        locationServiceManager.unbind()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i(TAG, "onCreate")
         setContentView(R.layout.activity_main)
         //setSupportActionBar(toolbar)
 
@@ -93,6 +84,19 @@ class MainActivity : AppCompatActivity() {
         locationTextView.setOnClickListener {
             displayLocation(locationServiceManager.getLastLocation(), 123)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart")
+        locationServiceManager = LocationServiceManager(this)
+        locationServiceManager.bind()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop")
+        locationServiceManager.unbind()
     }
 
     private fun displayLocation(location: Location?, numOfLocations: Int)

@@ -11,5 +11,8 @@ Todo steps:
 3 get current location from gps - DONE
 4 allow updating item location with current location
   4a can add item with location or without it - DONE
+  4b move location boilerplate code to another service / classes - DONE
+  4c manage location permission in lituations like moving app to background, disabling permission in runtime or beetween app runs
+    4cI Add logs from lifecycle callback of MainActivity and LocationService - DONE
 5 show arbitrary location on the map
 6 show item location on the map
