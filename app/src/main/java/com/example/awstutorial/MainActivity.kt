@@ -28,36 +28,20 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
     private var locationGetsCounter: UInt = 0u;
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private var locationServiceManager = LocationServiceManager()
 
-    private lateinit var locationService : LocationService
-    private var locationServiceBound : Boolean = false
-    private val locationServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as LocationService.LocalBinder
-            locationService = binder.getService()
-            locationServiceBound = true
-        }
-        override fun onServiceDisconnected(name: ComponentName?) {
-            locationServiceBound = false
-        }
-    }
 
     override fun onStart() {
         super.onStart()
-        Intent(this, LocationService::class.java).also { intend ->
-            bindService(intend, locationServiceConnection, Context.BIND_AUTO_CREATE)
-        }
+        locationServiceManager.bind(this)
     }
 
     override fun onStop() {
         super.onStop()
-        unbindService(locationServiceConnection)
-        locationServiceBound = false
+        locationServiceManager.unbind(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     if (isGranted) {
                         // Permission is granted. Continue the action or workflow in your
                         // app.
-                        locationService.requestLocationUpdates()
+                        locationServiceManager.requestLocationUpdates()
                         //fusedLocationClient.lastLocation
                         //        .addOnSuccessListener { location : Location? ->
                         //            // Got last known location. In some rare situations this can be null.
@@ -138,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     // You can use the API that requires the permission.
-                    locationService.requestLocationUpdates()
+                    locationServiceManager.requestLocationUpdates()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 // In an educational UI, explain to the user why your app requires this
@@ -156,12 +140,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
         locationTextView.setOnClickListener {
-            displayLocation(locationService.getLocation(), 123)
+            displayLocation(locationServiceManager.getLastLocation(), 123)
         }
     }
 
-    private fun displayLocation(location: Location, numOfLocations: Int)
+    private fun displayLocation(location: Location?, numOfLocations: Int)
     {
+        if (location == null)
+        {
+            locationTextView.setText("Location is null")
+            return
+        }
         latitude = location.latitude
         longitude = location.longitude
         val latitudeStr = Location.convert(latitude, Location.FORMAT_SECONDS)
