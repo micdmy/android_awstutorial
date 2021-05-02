@@ -1,11 +1,11 @@
 package com.example.awstutorial
 
 import android.Manifest
-import android.content.Intent
-import android.content.IntentSender
+import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
@@ -34,6 +34,31 @@ class MainActivity : AppCompatActivity() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
 
+    private lateinit var locationService : LocationService
+    private var locationServiceBound : Boolean = false
+    private val locationServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as LocationService.LocalBinder
+            locationService = binder.getService()
+            locationServiceBound = true
+        }
+        override fun onServiceDisconnected(name: ComponentName?) {
+            locationServiceBound = false
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Intent(this, LocationService::class.java).also { intend ->
+            bindService(intend, locationServiceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService(locationServiceConnection)
+        locationServiceBound = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +71,6 @@ class MainActivity : AppCompatActivity() {
 
         setupAuthButton(UserData)
 
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) ==  ConnectionResult.SUCCESS) {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        } else {
-            Log.e(TAG, "Cant start Google Play API")
-            Toast.makeText(this, "Cant start Google Play API", Toast.LENGTH_SHORT).show()
-        }
         UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
             // update UI
             Log.i(TAG, "isSignedIn changed : $isSignedUp")
@@ -92,14 +111,7 @@ class MainActivity : AppCompatActivity() {
                     if (isGranted) {
                         // Permission is granted. Continue the action or workflow in your
                         // app.
-                        val locationRequest = LocationRequest.create().apply {
-                            interval = 10000
-                            fastestInterval = 5000
-                            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                        }
-                        fusedLocationClient.requestLocationUpdates(locationRequest,
-                                locationCallback,
-                                Looper.getMainLooper())
+                        locationService.requestLocationUpdates()
                         //fusedLocationClient.lastLocation
                         //        .addOnSuccessListener { location : Location? ->
                         //            // Got last known location. In some rare situations this can be null.
@@ -118,18 +130,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
-                locationGetsCounter += 1u
-                val location = locationResult.lastLocation
-                //for (location in locationResult.locations){ //Alternatively, we can iterate, through locations:
-                //    // Update UI with location data
-                //    // ...
-                //}
-                displayLocation(location, locationResult.locations.size)
-            }
-        }
 
         fabGetLocation.setOnClickListener {
             when {
@@ -138,14 +138,7 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     // You can use the API that requires the permission.
-                    val locationRequest = LocationRequest.create().apply {
-                        interval = 10000
-                        fastestInterval = 5000
-                        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                    }
-                    fusedLocationClient.requestLocationUpdates(locationRequest,
-                            locationCallback,
-                            Looper.getMainLooper())
+                    locationService.requestLocationUpdates()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 // In an educational UI, explain to the user why your app requires this
@@ -161,6 +154,9 @@ class MainActivity : AppCompatActivity() {
                         Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             }
+        }
+        locationTextView.setOnClickListener {
+            displayLocation(locationService.getLocation(), 123)
         }
     }
 
