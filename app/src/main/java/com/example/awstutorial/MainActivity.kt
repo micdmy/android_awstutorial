@@ -31,17 +31,18 @@ class MainActivity : AppCompatActivity() {
     private var locationGetsCounter: UInt = 0u;
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
-    private var locationServiceManager = LocationServiceManager()
+    private lateinit var locationServiceManager: LocationServiceManager
 
 
     override fun onStart() {
         super.onStart()
-        locationServiceManager.bind(this)
+        locationServiceManager = LocationServiceManager(this)
+        locationServiceManager.bind()
     }
 
     override fun onStop() {
         super.onStop()
-        locationServiceManager.unbind(this)
+        locationServiceManager.unbind()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,60 +86,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intend)
         }
 
-        // Register the permissions callback, which handles the user's response to the
-        // system permissions dialog. Save the return value, an instance of
-        // ActivityResultLauncher. You can use either a val, as shown in this snippet,
-        // or a lateinit var in your onAttach() or onCreate() method.
-        val requestPermissionLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestPermission()
-                ) { isGranted: Boolean ->
-                    if (isGranted) {
-                        // Permission is granted. Continue the action or workflow in your
-                        // app.
-                        locationServiceManager.requestLocationUpdates()
-                        //fusedLocationClient.lastLocation
-                        //        .addOnSuccessListener { location : Location? ->
-                        //            // Got last known location. In some rare situations this can be null.
-                        //            if (location != null) {
-                        //                val latitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES)
-                        //                val longitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES)
-                        //                locationTextView.setText("N:$latitude, E:$longitude")
-                        //            }
-                        //        }
-                    } else {
-                        // Explain to the user that the feature is unavailable because the
-                        // features requires a permission that the user has denied. At the
-                        // same time, respect the user's decision. Don't link to system
-                        // settings in an effort to convince the user to change their
-                        // decision.
-                    }
-                }
-
-
         fabGetLocation.setOnClickListener {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    // You can use the API that requires the permission.
-                    locationServiceManager.requestLocationUpdates()
-                }
-                shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected. In this UI,
-                // include a "cancel" or "no thanks" button that allows the user to
-                // continue using your app without granting the permission.
-
-                }
-                else -> {
-                    // You can directly ask for the permission.
-                    // The registered ActivityResultCallback gets the result of this request.
-                    requestPermissionLauncher.launch(
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                }
-            }
+            locationServiceManager.requestLocationUpdates(findViewById(android.R.id.content))
         }
+
         locationTextView.setOnClickListener {
             displayLocation(locationServiceManager.getLastLocation(), 123)
         }
