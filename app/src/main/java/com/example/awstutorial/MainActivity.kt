@@ -84,6 +84,10 @@ class MainActivity : AppCompatActivity() {
         locationTextView.setOnClickListener {
             displayLocation(locationServiceManager.getLastLocation(), 123)
         }
+
+        fabOpenMap.setOnClickListener {
+            startActivity(Intent(this, OsmActivity::class.java))
+        }
     }
 
     override fun onStart() {

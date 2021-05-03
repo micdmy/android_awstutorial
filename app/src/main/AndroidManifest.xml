@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- To request foreground location access, declare one of these permissions. -->
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".AndroidGettingStartedApplication"
@@ -59,6 +60,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.awstutorial.MainActivity" />
         </activity>
+        <activity
+            android:name=".OsmActivity"
+            android:label="Osm map"
+            android:theme="@style/Theme.AWSTutorial.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.awstutorial.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>
