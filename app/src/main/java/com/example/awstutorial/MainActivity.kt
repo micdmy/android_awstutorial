@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var locationServiceManager: LocationServiceManager
-
+    private lateinit var tabsAdapter: TabsAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerViewItems(item_list)
 
         setupAuthButton(UserData)
+
+        tabsAdapter = TabsAdapter(this)
+        viewPager.adapter = tabsAdapter
 
         UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
             // update UI
