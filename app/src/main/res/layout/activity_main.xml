@@ -34,20 +34,6 @@
         app:fabSize="auto" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_baseline_post_add"
-        android:visibility="invisible"
-        app:fabCustomSize="60dp"
-        app:fabSize="auto"
-        app:layout_anchor="@+id/fabAuth"
-        app:layout_anchorGravity="center_horizontal|top" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabItemAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +44,7 @@
         android:visibility="invisible"
         app:fabCustomSize="60dp"
         app:fabSize="auto"
-        app:layout_anchor="@+id/fabAdd"
+        app:layout_anchor="@+id/fabAuth"
         app:layout_anchorGravity="center_horizontal|top" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

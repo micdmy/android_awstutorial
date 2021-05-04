@@ -1,27 +1,16 @@
 package com.example.awstutorial
 
-import android.Manifest
 import android.content.*
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.os.IBinder
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.play.core.tasks.Task
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -42,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         //setSupportActionBar(toolbar)
 
         // prepare our List view and RecyclerView (cells)
-        setupRecyclerViewNotes(note_list)
         setupRecyclerViewItems(item_list)
 
         setupAuthButton(UserData)
@@ -55,19 +43,14 @@ class MainActivity : AppCompatActivity() {
             if (isSignedUp) {
                 fabAuth.setImageResource(R.drawable.ic_baseline_lock_open)
                 Log.d(TAG, "Showing fabADD")
-                fabAdd.show()
                 fabItemAdd.show()
             } else {
                 fabAuth.setImageResource(R.drawable.ic_baseline_lock)
                 Log.d(TAG, "Hiding fabADD")
-                fabAdd.hide()
                 fabItemAdd.hide()
             }
         })
 
-        fabAdd.setOnClickListener {
-            startActivity(Intent(this, AddNoteActivity::class.java))
-        }
         fabItemAdd.setOnClickListener {
             val intend = Intent(this, AddActivityItem::class.java)
             val bundle = Bundle()
@@ -118,43 +101,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // recycler view is the list of cells
-    private fun setupRecyclerViewNotes(recyclerView: RecyclerView) {
-        // update individual cell when the Note data are modified
-        UserData.notes().observe(this, Observer<MutableList<UserData.Note>> { notes ->
-            Log.d(TAG, "Note observer received ${notes.size} notes")
-
-            // let's create a RecyclerViewAdapter that manages the individual cells
-            recyclerView.adapter = NoteRecyclerViewAdapter(notes)
-        })
-        // add a touch gesture handler to manager the swipe to delete gesture
-        val noteSwipeCallback = object : SwipeCallback(this) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-
-                Toast.makeText(activity, "deleted", Toast.LENGTH_SHORT).show()
-
-                //Remove swiped item from list and notify the RecyclerView
-                Log.d(TAG, "Going to remove ${viewHolder.adapterPosition}")
-
-                // get the position of the swiped item in the list
-                val position = viewHolder.adapterPosition
-
-                // remove to note from the userdata will refresh the UI
-                val note = UserData.deleteNote(position)
-
-                // async remove from backend
-                Backend.deleteNote(note)
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(noteSwipeCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
-
-    }
-
-    // recycler view is the list of cells
     private fun setupRecyclerViewItems(recyclerView: RecyclerView) {
         // update individual cell when the Item data are modified
         UserData.items().observe(this, Observer<MutableList<UserData.Item>> { items ->
-            Log.d(TAG, "Item observer received ${items.size} notes")
+            Log.d(TAG, "Item observer received ${items.size} items")
 
             // let's create a RecyclerViewAdapter that manages the individual cells
             recyclerView.adapter = ItemRecyclerViewAdapter(items)
@@ -174,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 // get the position of the swiped item in the list
                 val position = viewHolder.adapterPosition
 
-                // remove to note from the userdata will refresh the UI
+                // remove to item from the userdata will refresh the UI
                 val item = UserData.deleteItem(position)
 
                 // async remove from backend

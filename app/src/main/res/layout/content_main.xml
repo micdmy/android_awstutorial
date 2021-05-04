@@ -22,19 +22,4 @@
         tools:context=".MainActivity"
         tools:listitem="@layout/content_item" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/note_list"
-        android:name="com.example.myapplication.ItemListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="0dp"
-        android:layout_weight="1"
-
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="8dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".MainActivity"
-        tools:listitem="@layout/content_note" />
-
-
 </LinearLayout>
