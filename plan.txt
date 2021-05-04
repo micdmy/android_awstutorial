@@ -1,0 +1,56 @@
+Quests:
+	Creating:
+		-In players location
+		?Adjustment of location (within a couple of meters) 
+		-After creating, quest waits to be confirmed by other players (to verification status)
+		-Only X quests per player can be 'to verification'
+		?Hint
+		-Quest done when:
+			-Quest's location reached
+			-All subquests done
+			?Set number of subquests done
+			?User has some number of some things
+		-Prize for quest:
+			-Points
+			?Items
+			?Next quest (quests) unlocked (in story)
+		?If has unvisible subquest, description should inform how to find it
+	On map:
+		-Has one start location visible on the map (for story?)
+		-Subquests are visible after conditions are met
+		-Completed quest in other color / filtered
+		-Quests created by you in other color
+	User's quests list:
+		-Status of a quest is clear for the user (done / in progres)
+		?Current quest on top
+Subquests:
+	On map:
+		-Visibility:
+			-When parent quest is active
+			-When user finds it
+	User's quest list:
+		-Listed under main quest
+			-Visible according to visibility on the map (i.e. not listed if not found)
+User performs the quest:
+	-He can cancel it
+	-After canceling, he may leave msg to the owner
+	User performed the quest:
+		-He receives prize
+		?If Hintused - prize is smaller
+		-He may accept quest 'to verification'
+		-He can leave msg for the owner (he must leave msg if verification was negative.
+		-Quest added to 'done' quests list
+
+Players screen:
+	-Statistics visible:
+		-Players name
+		-Num of Quests done
+		-Num of Current quests
+		-Created quest (verified)
+		-Created quests (to verification)
+		?Name of current quest
+		-Exp points
+		?Items in inventory
+?Inventory
+	?List of items
+	
