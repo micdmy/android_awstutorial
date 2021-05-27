@@ -8,9 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_map.*
 import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.*
@@ -80,49 +82,49 @@ class MapFragment : Fragment() {
 
 
         //your items
-      //  val items = ArrayList<OverlayItem>()
-      //  items.add(OverlayItem("Title", "Description", GeoPoint(0.0, 0.0)))
-      //  var overlay = ItemizedOverlayWithFocus<OverlayItem>(items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
-      //      override fun onItemSingleTapUp(index: Int, item: OverlayItem): Boolean {
-      //          //do something
-      //          Log.i(TAG, "onItemSingleTapUp")
-      //          return true
-      //      }
+        val items = ArrayList<OverlayItem>()
+        items.add(OverlayItem("Title", "Description", GeoPoint(0.0, 0.0)))
+        var overlay = ItemizedOverlayWithFocus<OverlayItem>(items, object : ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
+            override fun onItemSingleTapUp(index: Int, item: OverlayItem): Boolean {
+                //do something
+                Log.i(TAG, "onItemSingleTapUp")
+                return true
+            }
 
-      //      override fun onItemLongPress(index: Int, item: OverlayItem): Boolean {
-      //          Log.i(TAG, "onItemLongPress")
-      //          return false
-      //      }
-      //  }, activityContext)
-      //  overlay.setFocusItemsOnTap(true);
-      //  map.overlays.add(overlay);
+            override fun onItemLongPress(index: Int, item: OverlayItem): Boolean {
+                Log.i(TAG, "onItemLongPress")
+                return false
+            }
+        }, activityContext)
+        overlay.setFocusItemsOnTap(true);
+        map.overlays.add(overlay);
 
-       // //Marker V2 google api:
-       // val startMarker = Marker(map)
-       // startMarker.setPosition(GeoPoint(51.0, 17.0))
-       // startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-       // startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars));
-       // startMarker.setTitle("My marker");
-       // map.overlays.add(startMarker)
+        //Marker V2 google api:
+        val startMarker = Marker(map)
+        startMarker.setPosition(GeoPoint(51.0, 17.0))
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars));
+        startMarker.setTitle("My marker");
+        map.overlays.add(startMarker)
 
-      //  class MReceive : MapEventsReceiver {
-      //      override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-      //          Toast.makeText(activityContext,"${p?.getLatitude()}  - ${p?.getLongitude()}",
-      //              Toast.LENGTH_LONG).show()
-      //          Log.i(TAG, "onSingleTap")
-      //          return false
-      //      }
+        class MReceive : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                Toast.makeText(activityContext,"${p?.getLatitude()}  - ${p?.getLongitude()}",
+                    Toast.LENGTH_LONG).show()
+                Log.i(TAG, "onSingleTap")
+                return false
+            }
 
-      //      override fun longPressHelper(p: GeoPoint?): Boolean {
-      //          Toast.makeText(activityContext,"${p?.getLatitude()}  - ${p?.getLongitude()}",
-      //              Toast.LENGTH_LONG).show()
-      //          Log.i(TAG, "onLongPress")
-      //          return false
-      //      }
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                Toast.makeText(activityContext,"${p?.getLatitude()}  - ${p?.getLongitude()}",
+                    Toast.LENGTH_LONG).show()
+                Log.i(TAG, "onLongPress")
+                return false
+            }
 
-      //  }
-      //  val overlayEvents = MapEventsOverlay(MReceive())
-      //  map.getOverlays().add(overlayEvents)
+        }
+        val overlayEvents = MapEventsOverlay(MReceive())
+        map.getOverlays().add(overlayEvents)
     }
 
     override fun onStart() {

@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var locationServiceManager: LocationServiceManager
-    private lateinit var tabsAdapter: TabsAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,26 +37,8 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerViewItems(item_list)
 
         setupAuthButton(UserData)
-        viewPager.isUserInputEnabled = false
-        tabsAdapter = TabsAdapter(this)
-        viewPager.adapter = tabsAdapter
-        TabLayoutMediator(tab_layout, viewPager) { tab, position ->
-            tab.text = "OBJECT ${(position + 1)}"
-        }.attach()
 
-       // tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
-       //     override fun onTabSelected(tab: TabLayout.Tab){
-
-       //     }
-
-       //     override fun onTabUnselected(tab: TabLayout.Tab?) {
-       //         TODO("Not yet implemented")
-       //     }
-
-       //     override fun onTabReselected(tab: TabLayout.Tab?) {
-       //         TODO("Not yet implemented")
-       //     }
-       // })
+        setupTabs()
 
         UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
             // update UI
@@ -90,9 +73,6 @@ class MainActivity : AppCompatActivity() {
             displayLocation(locationServiceManager.getLastLocation(), 123)
         }
 
-        fabOpenMap.setOnClickListener {
-            startActivity(Intent(this, OsmActivity::class.java))
-        }
     }
 
     override fun onStart() {
@@ -174,6 +154,38 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setupTabs() {
+        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab){
+                when(tab.position) {
+                    0 -> {
+                        supportFragmentManager.commit {
+                            replace<PlayerHomeFragment>(R.id.frame_layout)
+                            setReorderingAllowed(true)
+                        }
+                    }
+                    else -> {
+                        supportFragmentManager.commit {
+                            replace<MapFragment>(R.id.frame_layout)
+                            setReorderingAllowed(true)
+                        }
+                    }
+
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
+
+        supportFragmentManager.commit {
+            replace<PlayerHomeFragment>(R.id.frame_layout)
+            setReorderingAllowed(true)
+        }
+    }
+
     // receive the web redirect after authentication
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

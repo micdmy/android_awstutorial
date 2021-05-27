@@ -60,14 +60,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.awstutorial.MainActivity" />
         </activity>
-        <activity
-            android:name=".OsmActivity"
-            android:label="Osm map"
-            android:theme="@style/Theme.AWSTutorial.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.awstutorial.MainActivity" />
-        </activity>
 
     </application>
 
