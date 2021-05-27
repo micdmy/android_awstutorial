@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -34,9 +36,26 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerViewItems(item_list)
 
         setupAuthButton(UserData)
-
+        viewPager.isUserInputEnabled = false
         tabsAdapter = TabsAdapter(this)
         viewPager.adapter = tabsAdapter
+        TabLayoutMediator(tab_layout, viewPager) { tab, position ->
+            tab.text = "OBJECT ${(position + 1)}"
+        }.attach()
+
+       // tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+       //     override fun onTabSelected(tab: TabLayout.Tab){
+
+       //     }
+
+       //     override fun onTabUnselected(tab: TabLayout.Tab?) {
+       //         TODO("Not yet implemented")
+       //     }
+
+       //     override fun onTabReselected(tab: TabLayout.Tab?) {
+       //         TODO("Not yet implemented")
+       //     }
+       // })
 
         UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
             // update UI

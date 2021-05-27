@@ -21,6 +21,7 @@ class PlayerHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
         textView.text = "Player's home page"
     }
 
