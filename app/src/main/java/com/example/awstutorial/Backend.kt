@@ -17,9 +17,10 @@ import com.amplifyframework.auth.result.AuthSignInResult
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.InitializationStatus
 import com.amplifyframework.datastore.generated.model.ItemData
-import com.amplifyframework.datastore.generated.model.NoteData
+import com.amplifyframework.datastore.generated.model.YourData
 import com.amplifyframework.hub.HubChannel
 import com.amplifyframework.hub.HubEvent
+import java.util.*
 
 object Backend {
 
@@ -90,6 +91,10 @@ object Backend {
             this.queryItems()
         } else {
             UserData.resetItems()
+        }
+
+        if (withSignedInStatus) {
+            queryPlayer()
         }
     }
 
@@ -171,6 +176,45 @@ object Backend {
                     }
                 },
                 { error -> Log.e(TAG, "Delete failed", error) }
+        )
+    }
+
+    fun queryPlayer() {
+        Log.i(TAG, "Querying player")
+        Amplify.API.query(
+                ModelQuery.list(YourData::class.java),
+                { response ->
+                    when (response.data.count())
+                    {
+                        0 -> {
+                            val p = UserData.Player(UUID.randomUUID().toString(), null, 0)
+                            createPlayer(p)
+                            UserData.setPlayer(p)
+                        }
+                        1 -> {
+                            UserData.setPlayer(UserData.Player.from(response.data.first()))
+                        }
+                        else -> {
+                            Log.e(TAG, "Too much entries queried: ${response.data.count()}")
+                        }
+                    }
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+        )
+    }
+    private fun createPlayer(player : UserData.Player) {
+        Log.i(TAG, "Creating player")
+        Amplify.API.mutate(
+                ModelMutation.create(player.data),
+                { response ->
+                    Log.i(TAG, "Player Created")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, response.errors.first().message)
+                    } else {
+                        Log.i(TAG, "Created Player with id: " + response.data.id)
+                    }
+                },
+                { error -> Log.e(TAG, "Create Player failed", error) }
         )
     }
 }

@@ -4,6 +4,14 @@ https://aws.amazon.com/getting-started/hands-on/build-android-app-amplify/
 Tutorials git repo:
 https://github.com/sebsto/amplify-ios-getting-started
 
+
+generate API java code for android application from graphql:
+amplify codegen models
+
+deploy API to AWS:
+amplify api gql-compile
+amplify api push
+
 Todo steps:
 
 1 define data scheme for items that can have location and owner - DONE

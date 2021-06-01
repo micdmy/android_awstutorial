@@ -4,10 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.amplifyframework.datastore.generated.model.NoteData
-import com.amplifyframework.datastore.generated.model.ItemData
-import com.amplifyframework.datastore.generated.model.ItemType
-import com.amplifyframework.datastore.generated.model.Coordinates
+import com.amplifyframework.datastore.generated.model.*
 
 // a singleton to hold user data (this is a ViewModel pattern, without inheriting from ViewModel)
 object UserData {
@@ -17,6 +14,12 @@ object UserData {
     //
     // observable properties
     //
+
+    var player = MutableLiveData<Player>(Player("", null, 0))
+    fun setPlayer(player : Player)
+    {
+       this.player.postValue(player)
+    }
 
     // signed in status
     private val _isSignedIn = MutableLiveData<Boolean>(false)
@@ -95,6 +98,22 @@ object UserData {
                     4 -> ItemType.RING
                     else -> ItemType.AMULET
                 }
+            }
+        }
+    }
+
+    data class Player (val id: String,  val owner: String?, val experience: Int) {
+        override fun toString(): String = id
+
+        val data : YourData
+            get() = YourData.builder()
+                    .experience(this.experience)
+                    .id(this.id)
+                    .build()
+
+        companion object {
+            fun from(yourData : YourData) : Player {
+                return Player(yourData.id, yourData.owner, yourData.experience)
             }
         }
     }

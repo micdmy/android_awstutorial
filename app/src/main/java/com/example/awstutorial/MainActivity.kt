@@ -36,25 +36,8 @@ class MainActivity : AppCompatActivity() {
         // prepare our List view and RecyclerView (cells)
         setupRecyclerViewItems(item_list)
 
-        setupAuthButton(UserData)
-
         setupTabs()
 
-        UserData.isSignedIn.observe(this, Observer<Boolean> { isSignedUp ->
-            // update UI
-            Log.i(TAG, "isSignedIn changed : $isSignedUp")
-
-            //animation inspired by https://www.11zon.com/zon/android/multiple-floating-action-button-android.php
-            if (isSignedUp) {
-                fabAuth.setImageResource(R.drawable.ic_baseline_lock_open)
-                Log.d(TAG, "Showing fabADD")
-                fabItemAdd.show()
-            } else {
-                fabAuth.setImageResource(R.drawable.ic_baseline_lock)
-                Log.d(TAG, "Hiding fabADD")
-                fabItemAdd.hide()
-            }
-        })
 
         fabItemAdd.setOnClickListener {
             val intend = Intent(this, AddActivityItem::class.java)
@@ -136,23 +119,6 @@ class MainActivity : AppCompatActivity() {
         val itemTouchHelper = ItemTouchHelper(itemSwipeCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-    }
-
-    private fun setupAuthButton(userData: UserData) {
-
-        // register a click listener
-        fabAuth.setOnClickListener { view ->
-
-            val authButton = view as FloatingActionButton
-
-            if (userData.isSignedIn.value!!) {
-                authButton.setImageResource(R.drawable.ic_baseline_lock_open)
-                Backend.signOut()
-            } else {
-                authButton.setImageResource(R.drawable.ic_baseline_lock_open)
-                Backend.signIn(this)
-            }
-        }
     }
 
     private fun setupTabs() {

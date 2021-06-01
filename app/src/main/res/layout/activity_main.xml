@@ -23,13 +23,13 @@
     <include layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAuth"
+        android:id="@+id/fabGetLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_baseline_location_searching"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_baseline_lock"
         app:fabCustomSize="60dp"
         app:fabSize="auto" />
 
@@ -44,21 +44,8 @@
         android:visibility="invisible"
         app:fabCustomSize="60dp"
         app:fabSize="auto"
-        app:layout_anchor="@+id/fabAuth"
+        app:layout_anchor="@+id/fabGetLocation"
         app:layout_anchorGravity="center_horizontal|top" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabGetLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_baseline_location_searching"
-        android:visibility="visible"
-        app:fabCustomSize="60dp"
-        app:fabSize="auto"
-        app:layout_anchor="@+id/fabAuth"
-        app:layout_anchorGravity="left|center_vertical" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
