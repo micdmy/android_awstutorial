@@ -17,8 +17,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Create a New Item"
+            android:text="Create a New Quest"
             android:textSize="10pt" />
+
+        <TextView
+            android:id="@+id/coordinates_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="GPS coordinates unknown, error" />
 
         <EditText
             android:id="@+id/name"
@@ -30,35 +37,31 @@
             android:lines="5" />
 
         <EditText
-            android:id="@+id/description"
+            android:id="@+id/story"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="description"
+            android:hint="Quest's story"
             android:inputType="textMultiLine"
-            android:lines="3" />
+            android:lines="5" />
+
         <EditText
-            android:id="@+id/location"
+            android:id="@+id/remarks"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="location"
+            android:hint="Real-world restrictions or hits"
             android:inputType="textMultiLine"
             android:lines="3" />
 
-        <TextView
-            android:id="@+id/coordinatesText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="GPS coordinates unknown, enable location to get them." />
-
-        <Spinner
-            android:id="@+id/itemType"
+        <EditText
+            android:id="@+id/hint_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"/>
+            android:layout_marginBottom="8dp"
+            android:hint="Provide a hint or leave it empty"
+            android:inputType="textMultiLine"
+            android:lines="3" />
 
         <Space
             android:layout_width="match_parent"
@@ -66,16 +69,17 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/addNote"
+            android:id="@+id/create_quest_button"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="#009688"
-            android:text="Add Item" />
+            android:text="Create quest"
+            android:visibility="gone" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/cancel_creating_quest_button"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

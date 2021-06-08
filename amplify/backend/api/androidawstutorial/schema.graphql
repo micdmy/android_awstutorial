@@ -40,3 +40,21 @@ type YourData @model
     experience: Int!
     owner: String
 }
+
+type QuestData @model
+@auth (rules: [ { allow: owner, operations: [create, delete] } ])
+{
+    name: String!
+    status: QuestStatus!
+    coordinates: Coordinates!
+    story: String!
+    remarks: String
+    hint: String
+}
+
+enum QuestStatus
+{
+    TO_VERIFICATION
+    ACCEPTED
+    REJECTED
+}

@@ -53,4 +53,19 @@ Players screen:
 		?Items in inventory
 ?Inventory
 	?List of items
-	
+
+DETAILS:
+
+Quest {
+    creatorPlayer
+    coordinates
+    status: {TO_VERIFICATION, ACCEPTED, REJECTED}
+    name
+    story
+    remarks (real world context)
+    hint
+    doneCondition -TODO
+    prize -TODO
+    subquests -TODO
+
+}

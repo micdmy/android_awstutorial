@@ -28,7 +28,7 @@ class ItemRecyclerViewAdapter(
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val nameView: TextView = view.findViewById(R.id.name)
-            val descriptionView: TextView = view.findViewById(R.id.description)
-            val locationView: TextView = view.findViewById(R.id.location)
+            val descriptionView: TextView = view.findViewById(R.id.story)
+            val locationView: TextView = view.findViewById(R.id.remarks)
         }
 }

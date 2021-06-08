@@ -39,15 +39,6 @@ class MainActivity : AppCompatActivity() {
         setupTabs()
 
 
-        fabItemAdd.setOnClickListener {
-            val intend = Intent(this, AddActivityItem::class.java)
-            val bundle = Bundle()
-            bundle.putDouble("latitude", latitude)
-            bundle.putDouble("longitude", longitude)
-            intend.putExtras(bundle)
-            startActivity(intend)
-        }
-
         fabGetLocation.setOnClickListener {
             locationServiceManager.requestLocationUpdates(findViewById(android.R.id.content))
         }
@@ -131,9 +122,21 @@ class MainActivity : AppCompatActivity() {
                             setReorderingAllowed(true)
                         }
                     }
-                    else -> {
+                    1 -> {
                         supportFragmentManager.commit {
                             replace<MapFragment>(R.id.frame_layout)
+                            setReorderingAllowed(true)
+                        }
+                    }
+                    2 -> {
+                        supportFragmentManager.commit {
+                            replace<QuestsFragment>(R.id.frame_layout)
+                            setReorderingAllowed(true)
+                        }
+                    }
+                    else -> {
+                        supportFragmentManager.commit {
+                            replace<ActionsFragment>(R.id.frame_layout)
                             setReorderingAllowed(true)
                         }
                     }

@@ -179,6 +179,23 @@ object Backend {
         )
     }
 
+    fun createQuest(quest : UserData.Quest) {
+        Log.i(TAG, "Creating items")
+
+        Amplify.API.mutate(
+                ModelMutation.create(quest.data),
+                { response ->
+                    Log.i(TAG, "Quest Created")
+                    if (response.hasErrors()) {
+                        Log.e(TAG, response.errors.first().message)
+                    } else {
+                        Log.i(TAG, "Created Quest with id: " + response.data.id)
+                    }
+                },
+                { error -> Log.e(TAG, "Create quest failed", error) }
+        )
+    }
+
     fun queryPlayer() {
         Log.i(TAG, "Querying player")
         Amplify.API.query(

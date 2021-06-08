@@ -59,6 +59,9 @@ object UserData {
         _items.notifyObserver()
     }
 
+    var questList = LiveItemList<Quest>()
+
+
     data class Item (val id: String, val name: String, val description: String, var itemType: ItemType, var location: String, val coordinates: Coordinates?) {
         override fun toString(): String = name
 
@@ -117,5 +120,31 @@ object UserData {
             }
         }
     }
+
+    data class Quest (val id: String, val name: String, val status: QuestStatus, val coordinates: Coordinates, val story: String, val remarks: String?, val hint: String?) {
+        override fun toString(): String = name
+        var playersProgress: PlayersProgress = PlayersProgress.OPEN
+
+        val data : QuestData
+            get() = QuestData.builder()
+                    .name(this.name)
+                    .status(this.status)
+                    .coordinates(this.coordinates)
+                    .story(this.story)
+                    .id(this.id)
+                    .remarks(this.remarks)
+                    .hint(this.hint)
+                    .build()
+
+        companion object {
+            fun from(questData: QuestData) : Quest {
+                return Quest(questData.id, questData.name, questData.status, questData.coordinates, questData.story, questData.remarks, questData.hint)
+            }
+        }
+        enum class PlayersProgress {
+            OPEN, IN_PROGRESS, DONE, FAILED
+        }
+    }
+
 
 }

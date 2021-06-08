@@ -53,8 +53,8 @@
                 android:value="com.example.awstutorial.MainActivity" />
         </activity>
         <activity
-            android:name=".AddActivityItem"
-            android:label="Add Item"
+            android:name=".CreateQuest"
+            android:label="Create Quest"
             android:theme="@style/Theme.AWSTutorial.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
