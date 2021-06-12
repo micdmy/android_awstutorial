@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         Log.i(TAG, "onStart")
         locationServiceManager = LocationServiceManager(this)
-        locationServiceManager.bind()
+        locationServiceManager.bind {}
     }
 
     override fun onStop() {

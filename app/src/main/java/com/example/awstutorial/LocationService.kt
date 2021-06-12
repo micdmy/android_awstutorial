@@ -21,8 +21,8 @@ class LocationService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest : LocationRequest
-    private lateinit var lastLocation: Location
-    fun getLocation() : Location {
+    private var lastLocation: Location? = null
+    fun getLocation() : Location? {
         return lastLocation
     }
     fun requestLocationUpdates() {
@@ -31,12 +31,15 @@ class LocationService : Service() {
         looper ?: return //TODO what if looper is null
         if (hasPermissions()) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, looper)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
+                lastLocation = location
+            }
         }
         else
         {
-           //TODO request permissions
+            //TODO request permissions
         }
-    }
+}
 
 
 

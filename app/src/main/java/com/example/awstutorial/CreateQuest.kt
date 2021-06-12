@@ -15,17 +15,6 @@ class CreateQuest : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_quest)
-        val location = locationServiceManager.getLastLocation()
-        val latitude = location?.latitude ?: 0.0
-        val longitude = location?.longitude ?: 0.0
-        coordinates = Coordinates.builder()
-                .latitude(latitude)
-                .longitude(longitude)
-                .build()
-        val latitudeStr = Location.convert(latitude, Location.FORMAT_SECONDS)
-        val longitudeStr = Location.convert(longitude, Location.FORMAT_SECONDS)
-        coordinates_text.text = "N:$latitudeStr, E:$longitudeStr"
-        create_quest_button.visibility = VISIBLE
 
         cancel_creating_quest_button.setOnClickListener {
             this.finish()
@@ -50,7 +39,22 @@ class CreateQuest : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         locationServiceManager = LocationServiceManager(this)
-        locationServiceManager.bind()
+        locationServiceManager.bind {
+            locationServiceManager.requestLocationUpdates(findViewById(android.R.id.content))
+            val location = locationServiceManager.getLastLocation()
+            if (location != null) {
+                val latitude = location.latitude
+                val longitude = location.longitude
+                coordinates = Coordinates.builder()
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .build()
+                val latitudeStr = Location.convert(latitude, Location.FORMAT_SECONDS)
+                val longitudeStr = Location.convert(longitude, Location.FORMAT_SECONDS)
+                coordinates_text.text = "N:$latitudeStr, E:$longitudeStr"
+                create_quest_button.visibility = VISIBLE
+            }
+        }
     }
 
     override fun onStop() {

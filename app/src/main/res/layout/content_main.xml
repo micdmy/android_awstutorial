@@ -37,6 +37,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Map" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabQuests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quests" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actions" />
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView

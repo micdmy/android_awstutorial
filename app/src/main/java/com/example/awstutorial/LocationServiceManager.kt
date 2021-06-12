@@ -21,11 +21,13 @@ class LocationServiceManager(private val activity: ComponentActivity) {
 
     private lateinit var locationService : LocationService
     private var locationServiceBound : Boolean = false
+    private lateinit var onBound : () -> Unit
     private val locationServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as LocationService.LocalBinder
             locationService = binder.getService()
             locationServiceBound = true
+            onBound?.invoke()
             Log.i(TAG, "onServiceConnected")
         }
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -52,7 +54,8 @@ class LocationServiceManager(private val activity: ComponentActivity) {
         }
     }
 
-    fun bind() {
+    fun bind(onBound : () -> Unit) {
+        this.onBound = onBound
         Intent(activity, LocationService::class.java).also { intend ->
             activity.bindService(intend, locationServiceConnection, Context.BIND_AUTO_CREATE)
         }
