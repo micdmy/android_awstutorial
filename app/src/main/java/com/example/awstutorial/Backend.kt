@@ -17,6 +17,7 @@ import com.amplifyframework.auth.result.AuthSignInResult
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.InitializationStatus
 import com.amplifyframework.datastore.generated.model.ItemData
+import com.amplifyframework.datastore.generated.model.QuestData
 import com.amplifyframework.datastore.generated.model.YourData
 import com.amplifyframework.hub.HubChannel
 import com.amplifyframework.hub.HubEvent
@@ -194,6 +195,24 @@ object Backend {
                 },
                 { error -> Log.e(TAG, "Create quest failed", error) }
         )
+    }
+
+    fun queryNearbyQuests(lattitude: Float, longitude: Float, onSuccess: ()->Unit)
+    {
+        Log.i(TAG, "Querying nearby quests")
+        Amplify.API.query(
+                ModelQuery.list(QuestData::class.java),
+                { response ->
+                    UserData.nearbyQuestsList.clearItems()
+                    for (questData in response.data)
+                    {
+                        UserData.nearbyQuestsList.addItem(UserData.Quest.from(questData))
+                    }
+                    onSuccess()
+                },
+                { error -> Log.e(TAG, "Query failure", error) }
+        )
+
     }
 
     fun queryPlayer() {

@@ -59,7 +59,7 @@ object UserData {
         _items.notifyObserver()
     }
 
-    var questList = LiveItemList<Quest>()
+    var nearbyQuestsList = LiveItemList<Quest>()
 
 
     data class Item (val id: String, val name: String, val description: String, var itemType: ItemType, var location: String, val coordinates: Coordinates?) {

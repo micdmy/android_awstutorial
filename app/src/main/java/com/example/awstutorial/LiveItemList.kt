@@ -3,10 +3,9 @@ package com.example.awstutorial
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-class LiveItemList<T> {
+class LiveItemList<T> : Iterable<T>{
     private val _items = MutableLiveData<MutableList<T>>(mutableListOf())
 
-    fun get() : LiveData<MutableList<T>> = _items
 
     private fun <T> MutableLiveData<T>.notifyObserver() {
         this.postValue(this.value)
@@ -37,4 +36,7 @@ class LiveItemList<T> {
     }
 
 
+    override fun iterator(): MutableIterator<T> {
+        return _items.value?.iterator() ?: mutableListOf<T>().iterator()t
+    }
 }

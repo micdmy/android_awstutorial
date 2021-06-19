@@ -99,14 +99,6 @@ class MapFragment : Fragment() {
         overlay.setFocusItemsOnTap(true);
         map.overlays.add(overlay);
 
-        //Marker V2 google api:
-        val startMarker = Marker(map)
-        startMarker.setPosition(GeoPoint(51.0, 17.0))
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-        startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars));
-        startMarker.setTitle("My marker");
-        map.overlays.add(startMarker)
-
         class MReceive : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 Toast.makeText(activityContext,"${p?.getLatitude()}  - ${p?.getLongitude()}",
@@ -125,6 +117,17 @@ class MapFragment : Fragment() {
         }
         val overlayEvents = MapEventsOverlay(MReceive())
         map.getOverlays().add(overlayEvents)
+
+        Backend.queryNearbyQuests(locationOverlay.lastFix?.latitude?.toFloat() ?: 0F, locationOverlay.lastFix?.longitude?.toFloat() ?: 0F) {
+            for(quest in UserData.nearbyQuestsList) {
+                val startMarker = Marker(map)
+                startMarker.setPosition(GeoPoint(quest.coordinates.latitude, quest.coordinates.longitude))
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars));
+                startMarker.setTitle(quest.name)
+                map.overlays.add(startMarker)
+            }
+        }
     }
 
     override fun onStart() {

@@ -31,7 +31,7 @@ class CreateQuest : AppCompatActivity() {
                     hint_text.text.toString()
             )
             Backend.createQuest(quest)
-            UserData.questList.addItem(quest)
+            // UserData.questList.addItem(quest)
             this.finish()
         }
     }
