@@ -123,7 +123,7 @@ class MapFragment : Fragment() {
                 val startMarker = Marker(map)
                 startMarker.setPosition(GeoPoint(quest.coordinates.latitude, quest.coordinates.longitude))
                 startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars));
+                startMarker.setIcon(getResources().getDrawable(R.drawable.ic_baseline_stars)); // PAOLA zmien ikonke
                 startMarker.setTitle(quest.name)
                 map.overlays.add(startMarker)
             }
